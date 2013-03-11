@@ -14,24 +14,24 @@ the list elements exceeds the defined size, the older elements are overwritten.
  
 There are four types of commands.
  
-"a"  n - Append the following n lines to the buffer. If the buffer is full they 
+"A"  n - Append the following n lines to the buffer. If the buffer is full they 
          replace the older entries.
-"r"  n - Remove first n elements of the buffer. These n elements are the ones 
+"R"  n - Remove first n elements of the buffer. These n elements are the ones 
          that were added earliest among the current elements.
-"l"    - List the elements of buffer in order of their inserting time.
-"q"    - Quit
+"L"    - List the elements of buffer in order of their inserting time.
+"Q"    - Quit
  
 Input format:
  
 First line of input contains N, the size of the buffer.
-a n    - append the following n lines to the buffer.
-r n    - remove first n elements of the buffer.
-l      - list the buffer.
-q      - Quit.
+A n    - append the following n lines to the buffer.
+R n    - remove first n elements of the buffer.
+L      - list the buffer.
+Q      - Quit.
  
 Output format:
  
-Whenever l command appears in the input, print the elements of buffer in order of 
+Whenever L command appears in the input, print the elements of buffer in order of 
 their inserting time. Element that was added first should appear first. 
 
 ```
