@@ -48,12 +48,7 @@ public class CircularBuffer {
             numItems++;
         }
 
-        updateIndexes();
-    }
-
-    private void updateIndexes() {
         insertionIndex++;
-
         if (insertionIndex >= buffer.length) {
             insertionIndex = 0;
         }
