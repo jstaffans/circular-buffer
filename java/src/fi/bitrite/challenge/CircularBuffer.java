@@ -6,7 +6,7 @@ import java.util.List;
 
 public class CircularBuffer {
 
-    private Object[] buffer;
+    private final Object[] buffer;
 
     private int insertionIndex = 0;
     private int numItems = 0;
@@ -42,12 +42,22 @@ public class CircularBuffer {
      * item in the buffer.
      */
     public void add(Object item) {
-        buffer[insertionIndex] = item;
+        insertItemAtCurrentInsertionIndex(item);
+        updateNumItems();
+        updateInsertionIndex();
+    }
 
+    private void updateNumItems() {
         if (numItems < buffer.length) {
             numItems++;
         }
+    }
 
+    private void insertItemAtCurrentInsertionIndex(Object item) {
+        buffer[insertionIndex] = item;
+    }
+
+    private void updateInsertionIndex() {
         insertionIndex++;
         if (insertionIndex >= buffer.length) {
             insertionIndex = 0;
@@ -65,12 +75,10 @@ public class CircularBuffer {
 
         if (n >= numItems) {
             emptyBuffer();
-            return;
+        } else {
+            removeItemsByRotatingAndNulling(n);
+            numItems -= n;
         }
-
-        removeItemsByRotating(n);
-
-        numItems -= n;
     }
 
     private void emptyBuffer() {
@@ -78,26 +86,25 @@ public class CircularBuffer {
         numItems = 0;
     }
 
-    private void removeItemsByRotating(int n) {
+    private void removeItemsByRotatingAndNulling(int numItemsToRemove) {
         // Algorithm with example buffer [5, 6, 2, 3, 4] and n=2:
         // 1) rotate left until the new oldest item is the first element: [4, 5, 6, 2, 3]
         // 2) set n right-most elements to null: [4, 5, 6, null, null]
         // 3) update insertionIndex to point to first null element
 
-        int offset = bufferIsInOrder() ? 0 : insertionIndex;
-        Collections.rotate(Arrays.asList(buffer), -(offset + n));
-        Arrays.fill(buffer, numItems - n, numItems, null);
-        insertionIndex = numItems - n;
-    }
+        int rotationOffset = bufferIsInOrder() ? 0 : insertionIndex;
+        Collections.rotate(Arrays.asList(buffer), -(rotationOffset + numItemsToRemove));
 
-    private void deleteItemsByShifting(int n) {
-        System.arraycopy(buffer, n, buffer, 0, numItems);
+        int nullFillOffset = numItems - numItemsToRemove;
+        Arrays.fill(buffer, nullFillOffset, numItems, null);
+
+        insertionIndex = nullFillOffset;
     }
 
     /**
      * @return The contents of the buffer starting from the oldest item.
      */
-    public List getItems() {
+    public List<Object> getItems() {
         Object[] wrappedItems = Arrays.copyOf(buffer, numItems);
 
         if (!bufferIsInOrder()) {
